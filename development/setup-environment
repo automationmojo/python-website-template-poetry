@@ -55,7 +55,7 @@ function Load-Variable-File {
             $value = $value.Substring(1, $value.Length - 2)
         }
 
-        $env:$name = $value
+        [System.Environment]::SetEnvironmentVariable($name, $value, "Process")
     }
 }
 '''
@@ -138,6 +138,9 @@ def customize_activation_script_windows(activate_script: str, env_file: str, cli
 
                 # Create a PowerShell function that acts like your CLI command
                 asf.write(f"# Create a function for the {cli_alias} command{LNSEP}")
+                asf.write(f"")
+                asf.write(f"$REPOSTIORY_DIRECTORY=$env:REPOSITORY_DIRECTORY")
+                asf.write(f""
                 asf.write(f"function {cli_alias} {{" + LNSEP)
                 # Use & to invoke the Python executable, and @args to forward CLI args
                 asf.write(f'    & "{venv_python}" "{cli_entry_point_script}" @args{LNSEP}')
